@@ -47,44 +47,48 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
 
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: AppColors.border),
-                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
-                      ),
-                      child: Text(
-                        '+91',
-                        style: GoogleFonts.dmSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(color: AppColors.border),
-                          borderRadius: const BorderRadius.horizontal(right: Radius.circular(12)),
+                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
                         ),
-                        child: TextField(
-                          keyboardType: TextInputType.phone,
-                          style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.textPrimary),
-                          decoration: InputDecoration(
-                            hintText: 'Enter 10-digit number',
-                            hintStyle: GoogleFonts.dmSans(fontSize: 14, color: AppColors.textTertiary),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '+91',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: AppColors.border),
+                            borderRadius: const BorderRadius.horizontal(right: Radius.circular(12)),
+                          ),
+                          child: TextField(
+                            keyboardType: TextInputType.phone,
+                            style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.textPrimary),
+                            decoration: InputDecoration(
+                              hintText: 'Enter 10-digit number',
+                              hintStyle: GoogleFonts.dmSans(fontSize: 14, color: AppColors.textTertiary),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 const Spacer(),

@@ -122,7 +122,7 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
                 const Spacer(),
 
                 GestureDetector(
-                  onTap: () => context.go('/home/alias'),
+                  onTap: () => context.go('/onboarding/verify'),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -131,7 +131,7 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
                       borderRadius: BorderRadius.circular(AppRadius.input),
                     ),
                     child: Text(
-                      'Get Started',
+                      'Continue',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.dmSans(
                         fontSize: 15,

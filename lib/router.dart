@@ -41,6 +41,7 @@ final router = GoRouter(
     ),
     GoRoute(path: '/notifications', builder: (_, __) => const NotificationsScreen()),
     GoRoute(path: '/profile', builder: (_, __) => const UserProfileScreen()),
+    GoRoute(path: '/onboarding/verify', builder: (_, __) => const DigilockerScreen(isOnboarding: true)),
     GoRoute(path: '/create-alias/verify', builder: (_, __) => const DigilockerScreen()),
     GoRoute(path: '/create-alias/purpose', builder: (_, __) => const AliasPurposeScreen()),
     GoRoute(path: '/create-alias/plan', builder: (_, __) => const PlanSelectionScreen()),
