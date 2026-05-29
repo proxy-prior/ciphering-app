@@ -32,7 +32,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 8),
 
                 Text(
-                  'Sign in to manage your virtual aliases',
+                  'Sign in to manage your alias numbers',
                   style: AppTheme.body,
                 ),
                 const SizedBox(height: 36),
