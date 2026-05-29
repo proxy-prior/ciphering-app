@@ -13,6 +13,8 @@ import 'screens/alias_purpose_screen.dart';
 import 'screens/plan_selection_screen.dart';
 import 'screens/alias_confirmation_screen.dart';
 import 'screens/home_shell.dart';
+import 'screens/privacy_policy_screen.dart';
+import 'screens/terms_conditions_screen.dart';
 
 final router = GoRouter(
   initialLocation: '/',
@@ -46,5 +48,7 @@ final router = GoRouter(
     GoRoute(path: '/create-alias/purpose', builder: (_, __) => const AliasPurposeScreen()),
     GoRoute(path: '/create-alias/plan', builder: (_, __) => const PlanSelectionScreen()),
     GoRoute(path: '/create-alias/confirmation', builder: (_, __) => const AliasConfirmationScreen()),
+    GoRoute(path: '/privacy-policy', builder: (_, __) => const PrivacyPolicyScreen()),
+    GoRoute(path: '/terms', builder: (_, __) => const TermsConditionsScreen()),
   ],
 );

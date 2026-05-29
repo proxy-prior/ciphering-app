@@ -444,21 +444,21 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                         onTap: _showPrivacySecurityDialog,
                       ),
                       SettingsRow(
-                        icon: Icons.info_outline,
-                        iconBg: const Color(0xFFF1F5F9),
-                        iconColor: AppColors.textTertiary,
-                        label: 'About',
-                        subtitle: 'Terms, privacy, licenses',
+                        icon: Icons.description_outlined,
+                        iconBg: AppColors.blockedBadgeBg,
+                        iconColor: AppColors.purple,
+                        label: 'Terms & Conditions',
+                        subtitle: 'Usage terms and policies',
+                        onTap: () => context.push('/terms'),
+                      ),
+                      SettingsRow(
+                        icon: Icons.privacy_tip_outlined,
+                        iconBg: AppColors.outgoingIconBg,
+                        iconColor: AppColors.blue,
+                        label: 'Privacy Policy',
+                        subtitle: 'Data collection and rights',
                         showDivider: false,
-                        onTap: () {
-                          showAboutDialog(
-                            context: context,
-                            applicationName: 'Ciphering',
-                            applicationVersion: '1.0.0',
-                            applicationLegalese:
-                                'Privacy-first virtual phone numbers for India.',
-                          );
-                        },
+                        onTap: () => context.push('/privacy-policy'),
                       ),
                     ],
                   ),
