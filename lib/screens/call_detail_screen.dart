@@ -183,27 +183,6 @@ class CallDetailScreen extends ConsumerWidget {
   void _showMenu(BuildContext context, WidgetRef ref, CallLogModel call) {
     BottomSheetMenu.show(context, [
       BottomSheetAction(
-        icon: Icons.block,
-        label: 'Block number',
-        onTap: () async {
-          final confirmed = await ConfirmationDialog.show(
-            context,
-            title: 'Block this number?',
-            message: "You won't receive calls from this number on any alias.",
-            confirmLabel: 'Block',
-            isDestructive: true,
-          );
-          if (confirmed) {
-            ref.read(callLogProvider.notifier).blockNumber(call.callerNumber);
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Number blocked')),
-              );
-            }
-          }
-        },
-      ),
-      BottomSheetAction(
         icon: Icons.save_alt,
         label: 'Save contact',
         onTap: () => _showSaveContactDialog(context, ref, call),

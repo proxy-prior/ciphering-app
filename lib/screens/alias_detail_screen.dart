@@ -128,10 +128,6 @@ class AliasDetailScreen extends ConsumerWidget {
                                 alias.expiryDate!.isAfter(DateTime.now())
                             ? AppColors.green
                             : null,
-                      ),
-                      _DetailRow(
-                        label: 'Plan',
-                        value: alias.plan ?? 'N/A',
                         showDivider: false,
                       ),
                     ],

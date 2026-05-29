@@ -82,7 +82,50 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
                 Text('Set up your profile', style: AppTheme.otpTitle),
                 const SizedBox(height: 6),
                 Text('Tell us a bit about yourself', style: AppTheme.body),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF7ED),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFFED7AA)),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFB923C),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          'BETA',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'The service is provided on a testing basis, features may change without notice, and availability is not guaranteed. By participating, you agree to use the service only for lawful purposes and acknowledge that functionality may be modified, suspended, or discontinued during the beta period.',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 11,
+                            color: const Color(0xFF9A3412),
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
 
                 Center(
                   child: GestureDetector(

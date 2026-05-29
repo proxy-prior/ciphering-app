@@ -73,6 +73,23 @@ class _AliasManagerScreenState extends ConsumerState<AliasManagerScreen> {
                     'Hello, ${profile.name.split(' ').first} \u{1F44B}',
                     style: AppTheme.welcomeName,
                   ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFB923C),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'BETA',
+                      style: GoogleFonts.dmSans(
+                        fontSize: 8,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                  ),
                   const Spacer(),
                   IconButtonCircle(
                     icon: Icons.notifications_outlined,

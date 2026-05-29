@@ -92,10 +92,11 @@ class CallLogRow extends StatelessWidget {
               ),
             ),
             Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 StatusBadge.fromCallStatus(call.status),
-                const SizedBox(height: 4),
+                const SizedBox(height: 16),
                 Text(
                   _timeStr,
                   style: GoogleFonts.dmSans(

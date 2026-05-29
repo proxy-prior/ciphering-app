@@ -151,12 +151,25 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
                 children: [
                   Text('Premium', style: AppTheme.heading),
                   const SizedBox(height: 4),
-                  Text(
-                    'INR 99/month',
-                    style: AppTheme.bodySmall.copyWith(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        'INR 99/month',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppColors.textTertiary,
+                          decoration: TextDecoration.lineThrough,
+                          decorationColor: AppColors.textTertiary,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'INR 0 - Beta',
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppColors.green,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   _buildFeatureRow('Unlimited aliases'),
