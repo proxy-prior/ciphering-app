@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../data/mock_data.dart';
+import '../providers/call_log_provider.dart';
+import '../widgets/confirmation_dialog.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/icon_button_circle.dart';
 import '../widgets/quick_stats_ribbon.dart';
@@ -9,14 +13,23 @@ import '../widgets/glass_card.dart';
 import '../widgets/section_header.dart';
 import '../widgets/bottom_sheet_menu.dart';
 
-class CallDetailScreen extends StatelessWidget {
+class CallDetailScreen extends ConsumerWidget {
   final int callIndex;
 
   const CallDetailScreen({super.key, required this.callIndex});
 
   @override
-  Widget build(BuildContext context) {
-    final call = MockData.callLogs[callIndex];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logs = ref.watch(callLogProvider);
+
+    if (callIndex < 0 || callIndex >= logs.length) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pop();
+      });
+      return const SizedBox.shrink();
+    }
+
+    final call = logs[callIndex];
     final alias = MockData.aliases.firstWhere(
       (a) => a.number == call.aliasNumber,
       orElse: () => MockData.aliases.first,
@@ -46,7 +59,7 @@ class CallDetailScreen extends StatelessWidget {
                     ),
                     IconButtonCircle(
                       icon: Icons.more_vert,
-                      onTap: () => _showMenu(context),
+                      onTap: () => _showMenu(context, ref, call),
                     ),
                   ],
                 ),
@@ -84,7 +97,11 @@ class CallDetailScreen extends StatelessWidget {
 
                 // Call back button
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Calling ${call.callerName}...')),
+                    );
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                     decoration: BoxDecoration(
@@ -163,13 +180,128 @@ class CallDetailScreen extends StatelessWidget {
     );
   }
 
-  void _showMenu(BuildContext context) {
+  void _showMenu(BuildContext context, WidgetRef ref, CallLogModel call) {
     BottomSheetMenu.show(context, [
-      const BottomSheetAction(icon: Icons.block, label: 'Block number'),
-      const BottomSheetAction(icon: Icons.save_alt, label: 'Save contact'),
-      const BottomSheetAction(icon: Icons.copy, label: 'Copy number'),
-      const BottomSheetAction(icon: Icons.report_outlined, label: 'Report spam', isDestructive: true),
+      BottomSheetAction(
+        icon: Icons.block,
+        label: 'Block number',
+        onTap: () async {
+          final confirmed = await ConfirmationDialog.show(
+            context,
+            title: 'Block this number?',
+            message: "You won't receive calls from this number on any alias.",
+            confirmLabel: 'Block',
+            isDestructive: true,
+          );
+          if (confirmed) {
+            ref.read(callLogProvider.notifier).blockNumber(call.callerNumber);
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Number blocked')),
+              );
+            }
+          }
+        },
+      ),
+      BottomSheetAction(
+        icon: Icons.save_alt,
+        label: 'Save contact',
+        onTap: () => _showSaveContactDialog(context, ref, call),
+      ),
+      BottomSheetAction(
+        icon: Icons.copy,
+        label: 'Copy number',
+        onTap: () {
+          Clipboard.setData(ClipboardData(text: call.callerNumber));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Number copied')),
+          );
+        },
+      ),
+      BottomSheetAction(
+        icon: Icons.report_outlined,
+        label: 'Report spam',
+        isDestructive: true,
+        onTap: () async {
+          final confirmed = await ConfirmationDialog.show(
+            context,
+            title: 'Report as spam?',
+            message: 'This number will be flagged and blocked.',
+            confirmLabel: 'Report',
+            isDestructive: true,
+          );
+          if (confirmed) {
+            ref.read(callLogProvider.notifier).reportSpam(call.callerNumber);
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Number reported as spam')),
+              );
+            }
+          }
+        },
+      ),
     ]);
+  }
+
+  void _showSaveContactDialog(BuildContext context, WidgetRef ref, CallLogModel call) {
+    final controller = TextEditingController(text: call.callerName);
+
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Save Contact',
+          style: GoogleFonts.dmSans(
+            fontSize: 17,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: 'Contact name',
+            hintStyle: GoogleFonts.dmSans(color: AppColors.textTertiary),
+          ),
+          style: GoogleFonts.dmSans(color: AppColors.textPrimary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              final nameValue = controller.text.trim();
+              Navigator.pop(dialogContext);
+              if (nameValue.isNotEmpty) {
+                ref.read(callLogProvider.notifier).saveContact(call.callerNumber, nameValue);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Contact saved')),
+                );
+              }
+            },
+            child: Text(
+              'Save',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.accent,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

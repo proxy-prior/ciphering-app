@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../theme/app_theme.dart';
 import '../data/mock_data.dart';
+import '../providers/alias_provider.dart';
+import '../widgets/confirmation_dialog.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/icon_button_circle.dart';
 import '../widgets/quick_stats_ribbon.dart';
@@ -11,14 +16,26 @@ import '../widgets/section_header.dart';
 import '../widgets/status_badge.dart';
 import '../widgets/bottom_sheet_menu.dart';
 
-class AliasDetailScreen extends StatelessWidget {
+class AliasDetailScreen extends ConsumerWidget {
   final int aliasIndex;
 
   const AliasDetailScreen({super.key, required this.aliasIndex});
 
   @override
-  Widget build(BuildContext context) {
-    final alias = MockData.aliases[aliasIndex];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final aliases = ref.watch(aliasProvider);
+
+    if (aliasIndex >= aliases.length) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.go('/home/alias');
+      });
+      return const Scaffold(
+        backgroundColor: AppColors.screenBg,
+        body: SizedBox.shrink(),
+      );
+    }
+
+    final alias = aliases[aliasIndex];
 
     return Scaffold(
       backgroundColor: AppColors.screenBg,
@@ -44,7 +61,7 @@ class AliasDetailScreen extends StatelessWidget {
                     ),
                     IconButtonCircle(
                       icon: Icons.more_vert,
-                      onTap: () => _showMenu(context, alias),
+                      onTap: () => _showMenu(context, ref, alias),
                     ),
                   ],
                 ),
@@ -128,7 +145,11 @@ class AliasDetailScreen extends StatelessWidget {
                   child: SectionHeader(
                     title: 'Recent Activity',
                     actionLabel: 'See all',
-                    onActionTap: () {},
+                    onActionTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Full activity log coming soon')),
+                      );
+                    },
                   ),
                 ),
 
@@ -167,17 +188,118 @@ class AliasDetailScreen extends StatelessWidget {
     );
   }
 
-  void _showMenu(BuildContext context, AliasModel alias) {
+  void _showMenu(BuildContext context, WidgetRef ref, AliasModel alias) {
     final isPaused = alias.status == AliasStatus.paused;
     BottomSheetMenu.show(context, [
       BottomSheetAction(
         icon: isPaused ? Icons.play_arrow : Icons.pause,
         label: isPaused ? 'Resume alias' : 'Pause alias',
+        onTap: () {
+          final newStatus = isPaused ? AliasStatus.active : AliasStatus.paused;
+          ref.read(aliasProvider.notifier).updateStatus(aliasIndex, newStatus);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(isPaused ? 'Alias resumed' : 'Alias paused'),
+            ),
+          );
+        },
       ),
-      const BottomSheetAction(icon: Icons.schedule, label: 'Extend alias'),
-      const BottomSheetAction(icon: Icons.share, label: 'Share number'),
-      const BottomSheetAction(icon: Icons.delete_outline, label: 'Delete alias', isDestructive: true),
+      BottomSheetAction(
+        icon: Icons.schedule,
+        label: 'Extend alias',
+        onTap: () => _showExtendDialog(context, ref),
+      ),
+      BottomSheetAction(
+        icon: Icons.share,
+        label: 'Share number',
+        onTap: () {
+          Clipboard.setData(ClipboardData(text: alias.number));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Number copied to clipboard')),
+          );
+        },
+      ),
+      BottomSheetAction(
+        icon: Icons.delete_outline,
+        label: 'Delete alias',
+        isDestructive: true,
+        onTap: () => _confirmDelete(context, ref),
+      ),
     ]);
+  }
+
+  void _showExtendDialog(BuildContext context, WidgetRef ref) {
+    showDialog<int>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          'Extend Alias',
+          style: GoogleFonts.dmSans(
+            fontSize: 17,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final days in [7, 30, 90])
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  '$days days',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                onTap: () => Navigator.pop(dialogContext, days),
+              ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.dmSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).then((days) {
+      if (days != null && context.mounted) {
+        ref.read(aliasProvider.notifier).extendExpiry(aliasIndex, days);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Alias extended by $days days')),
+        );
+      }
+    });
+  }
+
+  void _confirmDelete(BuildContext context, WidgetRef ref) {
+    ConfirmationDialog.show(
+      context,
+      title: 'Delete Alias?',
+      message:
+          'This alias and all its data will be permanently deleted. This cannot be undone.',
+      confirmLabel: 'Delete',
+      isDestructive: true,
+    ).then((confirmed) {
+      if (confirmed && context.mounted) {
+        ref.read(aliasProvider.notifier).removeAlias(aliasIndex);
+        context.go('/home/alias');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Alias deleted')),
+        );
+      }
+    });
   }
 }
 

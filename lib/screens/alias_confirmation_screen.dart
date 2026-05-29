@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/primary_button.dart';
+import '../providers/alias_provider.dart';
+import '../data/mock_data.dart';
 
-class AliasConfirmationScreen extends StatelessWidget {
+class AliasConfirmationScreen extends ConsumerStatefulWidget {
   const AliasConfirmationScreen({super.key});
+
+  @override
+  ConsumerState<AliasConfirmationScreen> createState() =>
+      _AliasConfirmationScreenState();
+}
+
+class _AliasConfirmationScreenState
+    extends ConsumerState<AliasConfirmationScreen> {
+  late final String _generatedNumber;
+
+  @override
+  void initState() {
+    super.initState();
+    _generatedNumber = AliasNotifier.generateAliasNumber();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +80,7 @@ class AliasConfirmationScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          '+91 98456 12345',
+                          _generatedNumber,
                           style: AppTheme.heading.copyWith(fontSize: 22),
                         ),
                         const SizedBox(height: 16),
@@ -70,7 +88,7 @@ class AliasConfirmationScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Purpose', style: AppTheme.bodySmall),
-                            Text('Insurance', style: AppTheme.bodySmall),
+                            Text('Custom', style: AppTheme.bodySmall),
                           ],
                         ),
                         const SizedBox(height: 10),
@@ -79,7 +97,7 @@ class AliasConfirmationScreen extends StatelessWidget {
                           children: [
                             Text('Plan', style: AppTheme.bodySmall),
                             Text(
-                              'Premium',
+                              'Free',
                               style: AppTheme.bodySmall.copyWith(
                                 color: AppColors.accent,
                                 fontWeight: FontWeight.w600,
@@ -93,7 +111,25 @@ class AliasConfirmationScreen extends StatelessWidget {
                   const Spacer(),
                   PrimaryButton(
                     label: 'Go to Alias Manager',
-                    onPressed: () => context.go('/home/alias'),
+                    onPressed: () {
+                      final newAlias = AliasModel(
+                        label: 'New Alias',
+                        number: _generatedNumber,
+                        status: AliasStatus.active,
+                        category: AliasCategory.personal,
+                        emoji: '\u{1F4F1}',
+                        createdDate: DateTime.now(),
+                        expiryDate:
+                            DateTime.now().add(const Duration(days: 30)),
+                        purpose: 'Custom',
+                        plan: 'Free',
+                        totalCalls: 0,
+                        totalMessages: 0,
+                        lastActivity: 'Just now',
+                      );
+                      ref.read(aliasProvider.notifier).addAlias(newAlias);
+                      context.go('/home/alias');
+                    },
                   ),
                   const SizedBox(height: 32),
                 ],

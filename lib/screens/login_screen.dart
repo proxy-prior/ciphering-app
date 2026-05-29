@@ -8,6 +8,22 @@ import '../widgets/gradient_background.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
+  void _showDialog(BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,13 +141,23 @@ class LoginScreen extends StatelessWidget {
                         TextSpan(
                           text: 'Terms',
                           style: AppTheme.terms.copyWith(color: AppColors.accent),
-                          recognizer: TapGestureRecognizer()..onTap = () {},
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => _showDialog(
+                                  context,
+                                  'Terms of Service',
+                                  'Terms of Service will be available soon.',
+                                ),
                         ),
                         const TextSpan(text: ' and '),
                         TextSpan(
                           text: 'Privacy Policy',
                           style: AppTheme.terms.copyWith(color: AppColors.accent),
-                          recognizer: TapGestureRecognizer()..onTap = () {},
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => _showDialog(
+                                  context,
+                                  'Privacy Policy',
+                                  'Privacy Policy will be available soon.',
+                                ),
                         ),
                       ],
                     ),

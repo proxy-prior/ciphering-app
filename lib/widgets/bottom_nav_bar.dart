@@ -150,12 +150,12 @@ class _SmsLockedTab extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 6,
-            right: 6,
+            top: 2,
+            right: -2,
             child: Icon(
               Icons.lock_outline,
-              size: 12,
-              color: Colors.white.withValues(alpha: 0.3),
+              size: 10,
+              color: Colors.white.withValues(alpha: 0.4),
             ),
           ),
         ],

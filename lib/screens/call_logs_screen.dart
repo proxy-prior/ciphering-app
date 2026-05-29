@@ -1,53 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../data/mock_data.dart';
+import '../providers/call_log_provider.dart';
+import '../providers/notification_provider.dart';
+import '../providers/user_profile_provider.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/call_log_row.dart';
 import '../widgets/filter_pill.dart';
 import '../widgets/section_header.dart';
 import '../widgets/icon_button_circle.dart';
 
-class CallLogsScreen extends StatefulWidget {
+class CallLogsScreen extends ConsumerWidget {
   const CallLogsScreen({super.key});
-
-  @override
-  State<CallLogsScreen> createState() => _CallLogsScreenState();
-}
-
-class _CallLogsScreenState extends State<CallLogsScreen> {
-  String _selectedFilter = 'All';
 
   static const _filters = ['All', 'Missed', 'Spam', 'Saved'];
 
-  List<CallLogModel> get _filteredLogs {
-    final logs = MockData.callLogs;
-    switch (_selectedFilter) {
-      case 'Missed':
-        return logs.where((c) => c.status == CallStatus.missed).toList();
-      case 'Spam':
-        return logs.where((c) => c.status == CallStatus.blocked).toList();
-      case 'Saved':
-        return logs.where((c) => c.status == CallStatus.answered).toList();
-      default:
-        return logs;
-    }
-  }
-
-  Map<String, List<CallLogModel>> get _groupedLogs {
-    final filtered = _filteredLogs;
-    final grouped = <String, List<CallLogModel>>{};
-    for (final log in filtered) {
-      grouped.putIfAbsent(log.timeGroup, () => []).add(log);
-    }
-    return grouped;
-  }
-
   @override
-  Widget build(BuildContext context) {
-    final groups = _groupedLogs;
-    final profile = MockData.userProfile;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedFilter = ref.watch(callFilterProvider);
+    final filteredLogs = ref.watch(filteredCallLogProvider);
+    final allLogs = ref.watch(callLogProvider);
+    final unreadCount = ref.watch(unreadNotificationCountProvider);
+    final profile = ref.watch(userProfileProvider);
+
+    final groups = <String, List<CallLogModel>>{};
+    for (final log in filteredLogs) {
+      groups.putIfAbsent(log.timeGroup, () => []).add(log);
+    }
 
     return GradientBackground(
       child: SafeArea(
@@ -66,25 +48,27 @@ class _CallLogsScreenState extends State<CallLogsScreen> {
                   IconButtonCircle(
                     icon: Icons.notifications_outlined,
                     onTap: () => context.push('/notifications'),
-                    badge: Container(
-                      width: 16,
-                      height: 16,
-                      decoration: BoxDecoration(
-                        color: AppColors.notifBadgeBg,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.screenBg, width: 2),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '3',
-                          style: GoogleFonts.dmSans(
-                            fontSize: 8,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
+                    badge: unreadCount > 0
+                        ? Container(
+                            width: 16,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              color: AppColors.notifBadgeBg,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.screenBg, width: 2),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '$unreadCount',
+                                style: GoogleFonts.dmSans(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                        : null,
                   ),
                   const SizedBox(width: 8),
                   GestureDetector(
@@ -122,8 +106,9 @@ class _CallLogsScreenState extends State<CallLogsScreen> {
                           padding: EdgeInsets.only(right: filter != _filters.last ? 6 : 0),
                           child: FilterPill(
                             label: filter,
-                            isActive: _selectedFilter == filter,
-                            onTap: () => setState(() => _selectedFilter = filter),
+                            isActive: selectedFilter == filter,
+                            onTap: () =>
+                                ref.read(callFilterProvider.notifier).state = filter,
                           ),
                         ))
                     .toList(),
@@ -149,7 +134,7 @@ class _CallLogsScreenState extends State<CallLogsScreen> {
                             SectionHeader(title: timeGroup),
                             ...logs.asMap().entries.map(
                               (entry) {
-                                final globalIndex = MockData.callLogs.indexOf(entry.value);
+                                final globalIndex = allLogs.indexOf(entry.value);
                                 return CallLogRow(
                                   call: entry.value,
                                   onTap: () => context.push('/call-detail/$globalIndex'),

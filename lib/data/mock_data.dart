@@ -33,6 +33,36 @@ class AliasModel {
     this.totalMessages = 0,
     this.lastActivity,
   });
+
+  AliasModel copyWith({
+    String? label,
+    String? number,
+    AliasStatus? status,
+    AliasCategory? category,
+    String? emoji,
+    DateTime? expiryDate,
+    DateTime? createdDate,
+    String? purpose,
+    String? plan,
+    int? totalCalls,
+    int? totalMessages,
+    String? lastActivity,
+  }) {
+    return AliasModel(
+      label: label ?? this.label,
+      number: number ?? this.number,
+      status: status ?? this.status,
+      category: category ?? this.category,
+      emoji: emoji ?? this.emoji,
+      expiryDate: expiryDate ?? this.expiryDate,
+      createdDate: createdDate ?? this.createdDate,
+      purpose: purpose ?? this.purpose,
+      plan: plan ?? this.plan,
+      totalCalls: totalCalls ?? this.totalCalls,
+      totalMessages: totalMessages ?? this.totalMessages,
+      lastActivity: lastActivity ?? this.lastActivity,
+    );
+  }
 }
 
 class CallLogModel {
@@ -44,6 +74,8 @@ class CallLogModel {
   final DateTime timestamp;
   final String timeGroup;
   final Duration? duration;
+  final bool isBlocked;
+  final bool isSaved;
 
   const CallLogModel({
     required this.callerName,
@@ -54,7 +86,35 @@ class CallLogModel {
     required this.timestamp,
     required this.timeGroup,
     this.duration,
+    this.isBlocked = false,
+    this.isSaved = false,
   });
+
+  CallLogModel copyWith({
+    String? callerName,
+    String? callerNumber,
+    String? aliasNumber,
+    String? aliasLabel,
+    CallStatus? status,
+    DateTime? timestamp,
+    String? timeGroup,
+    Duration? duration,
+    bool? isBlocked,
+    bool? isSaved,
+  }) {
+    return CallLogModel(
+      callerName: callerName ?? this.callerName,
+      callerNumber: callerNumber ?? this.callerNumber,
+      aliasNumber: aliasNumber ?? this.aliasNumber,
+      aliasLabel: aliasLabel ?? this.aliasLabel,
+      status: status ?? this.status,
+      timestamp: timestamp ?? this.timestamp,
+      timeGroup: timeGroup ?? this.timeGroup,
+      duration: duration ?? this.duration,
+      isBlocked: isBlocked ?? this.isBlocked,
+      isSaved: isSaved ?? this.isSaved,
+    );
+  }
 }
 
 class MessageThreadModel {
@@ -107,6 +167,22 @@ class NotificationModel {
     required this.type,
     this.isRead = false,
   });
+
+  NotificationModel copyWith({
+    String? title,
+    String? description,
+    DateTime? timestamp,
+    NotificationType? type,
+    bool? isRead,
+  }) {
+    return NotificationModel(
+      title: title ?? this.title,
+      description: description ?? this.description,
+      timestamp: timestamp ?? this.timestamp,
+      type: type ?? this.type,
+      isRead: isRead ?? this.isRead,
+    );
+  }
 }
 
 class UserProfile {
@@ -117,6 +193,7 @@ class UserProfile {
   final bool isPremium;
   final int aliasCount;
   final int memberDays;
+  final bool notificationsEnabled;
 
   const UserProfile({
     required this.name,
@@ -126,7 +203,30 @@ class UserProfile {
     this.isPremium = false,
     this.aliasCount = 0,
     this.memberDays = 0,
+    this.notificationsEnabled = true,
   });
+
+  UserProfile copyWith({
+    String? name,
+    String? phone,
+    String? email,
+    DateTime? dateOfBirth,
+    bool? isPremium,
+    int? aliasCount,
+    int? memberDays,
+    bool? notificationsEnabled,
+  }) {
+    return UserProfile(
+      name: name ?? this.name,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      isPremium: isPremium ?? this.isPremium,
+      aliasCount: aliasCount ?? this.aliasCount,
+      memberDays: memberDays ?? this.memberDays,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+    );
+  }
 }
 
 class MockData {

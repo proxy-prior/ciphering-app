@@ -1,27 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../data/mock_data.dart';
+import '../providers/notification_provider.dart';
 import '../widgets/gradient_background.dart';
 import '../widgets/icon_button_circle.dart';
 import '../widgets/glass_card.dart';
 
-class NotificationsScreen extends StatefulWidget {
+class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
-  State<NotificationsScreen> createState() => _NotificationsScreenState();
+  ConsumerState<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
-class _NotificationsScreenState extends State<NotificationsScreen> {
+class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   int _selectedTab = 0;
+
+  List<NotificationModel> _filterByTab(List<NotificationModel> all) {
+    switch (_selectedTab) {
+      case 1:
+        return all
+            .where((n) =>
+                n.type == NotificationType.call ||
+                n.type == NotificationType.missedCall ||
+                n.type == NotificationType.block)
+            .toList();
+      case 2:
+        return all
+            .where((n) =>
+                n.type == NotificationType.alias ||
+                n.type == NotificationType.security ||
+                n.type == NotificationType.system)
+            .toList();
+      default:
+        return all;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final notifications = MockData.notifications;
-    final unreadCount = notifications.where((n) => !n.isRead).length;
-    final newItems = notifications.where((n) => !n.isRead).toList();
-    final earlierItems = notifications.where((n) => n.isRead).toList();
+    final allNotifications = ref.watch(notificationProvider);
+    final unreadCount = ref.watch(unreadNotificationCountProvider);
+    final allReadAlready = unreadCount == 0;
+
+    final filtered = _filterByTab(allNotifications);
+    final newItems = filtered.where((n) => !n.isRead).toList();
+    final earlierItems = filtered.where((n) => n.isRead).toList();
 
     return Scaffold(
       backgroundColor: AppColors.screenBg,
@@ -45,20 +71,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     Expanded(
                       child: Text('Inbox', style: AppTheme.pageTitle),
                     ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: AppColors.accentBg,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          'Mark all read',
-                          style: GoogleFonts.dmSans(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.accent,
+                    Opacity(
+                      opacity: allReadAlready ? 0.4 : 1.0,
+                      child: GestureDetector(
+                        onTap: allReadAlready
+                            ? null
+                            : () => ref.read(notificationProvider.notifier).markAllRead(),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.accentBg,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'Mark all read',
+                            style: GoogleFonts.dmSans(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.accent,
+                            ),
                           ),
                         ),
                       ),
@@ -109,13 +140,29 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     if (newItems.isNotEmpty) ...[
                       Text('NEW', style: AppTheme.sectionLabel),
                       const SizedBox(height: 10),
-                      ...newItems.map((n) => _NotificationItem(notification: n)),
+                      ...newItems.map((n) {
+                        final globalIndex = allNotifications.indexOf(n);
+                        return _NotificationItem(
+                          notification: n,
+                          onTap: () => ref
+                              .read(notificationProvider.notifier)
+                              .markRead(globalIndex),
+                        );
+                      }),
                       const SizedBox(height: 8),
                     ],
                     if (earlierItems.isNotEmpty) ...[
                       Text('EARLIER', style: AppTheme.sectionLabel),
                       const SizedBox(height: 10),
-                      ...earlierItems.map((n) => _NotificationItem(notification: n)),
+                      ...earlierItems.map((n) {
+                        final globalIndex = allNotifications.indexOf(n);
+                        return _NotificationItem(
+                          notification: n,
+                          onTap: () => ref
+                              .read(notificationProvider.notifier)
+                              .markRead(globalIndex),
+                        );
+                      }),
                     ],
                   ],
                 ),
@@ -197,8 +244,12 @@ class _Tab extends StatelessWidget {
 
 class _NotificationItem extends StatelessWidget {
   final NotificationModel notification;
+  final VoidCallback onTap;
 
-  const _NotificationItem({required this.notification});
+  const _NotificationItem({
+    required this.notification,
+    required this.onTap,
+  });
 
   Color get _iconBg {
     switch (notification.type) {
@@ -247,78 +298,81 @@ class _NotificationItem extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          GlassCard(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: _iconBg,
-                    borderRadius: BorderRadius.circular(12),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            GlassCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: _iconBg,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(_icon, size: 18, color: _iconColor),
                   ),
-                  child: Icon(_icon, size: 18, color: _iconColor),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        notification.title,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                          height: 1.3,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          notification.title,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                            height: 1.3,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        notification.description,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                          height: 1.4,
+                        const SizedBox(height: 2),
+                        Text(
+                          notification.description,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                            height: 1.4,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _timeAgo,
-                        style: GoogleFonts.dmSans(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textQuaternary,
+                        const SizedBox(height: 4),
+                        Text(
+                          _timeAgo,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textQuaternary,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          if (isUnread)
-            Positioned(
-              left: 8,
-              top: 0,
-              bottom: 0,
-              child: Center(
-                child: Container(
-                  width: 6,
-                  height: 6,
-                  decoration: const BoxDecoration(
-                    color: AppColors.accent,
-                    shape: BoxShape.circle,
+            if (isUnread)
+              Positioned(
+                left: 8,
+                top: 0,
+                bottom: 0,
+                child: Center(
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                      color: AppColors.accent,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

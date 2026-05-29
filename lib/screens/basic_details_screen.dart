@@ -15,6 +15,44 @@ class BasicDetailsScreen extends StatefulWidget {
 class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
   String _selectedUsage = 'Personal';
 
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
+  String? _nameError;
+  String? _emailError;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void _onContinue() {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+
+    String? nameError;
+    String? emailError;
+
+    if (name.isEmpty) {
+      nameError = 'Name is required';
+    }
+
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+      emailError = 'Enter a valid email';
+    }
+
+    setState(() {
+      _nameError = nameError;
+      _emailError = emailError;
+    });
+
+    if (nameError == null && emailError == null) {
+      context.go('/onboarding/verify');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,39 +85,81 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
                 const SizedBox(height: 24),
 
                 Center(
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: AppColors.divider,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: AppColors.textQuaternary,
-                        width: 2,
-                        strokeAlign: BorderSide.strokeAlignInside,
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.camera_alt_outlined, size: 24, color: AppColors.textTertiary),
-                        Text(
-                          'Add photo',
-                          style: GoogleFonts.dmSans(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.textTertiary,
-                          ),
+                  child: GestureDetector(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Camera not available in demo mode'),
+                          duration: Duration(seconds: 2),
                         ),
-                      ],
+                      );
+                    },
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: AppColors.divider,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: AppColors.textQuaternary,
+                          width: 2,
+                          strokeAlign: BorderSide.strokeAlignInside,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.camera_alt_outlined,
+                              size: 24, color: AppColors.textTertiary),
+                          Text(
+                            'Add photo',
+                            style: GoogleFonts.dmSans(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textTertiary,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 24),
 
-                const AppTextField(label: 'Full Name', hint: 'Enter your full name', keyboardType: TextInputType.name),
+                AppTextField(
+                  label: 'Full Name',
+                  hint: 'Enter your full name',
+                  keyboardType: TextInputType.name,
+                  controller: _nameController,
+                ),
+                if (_nameError != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    _nameError!,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 18),
-                const AppTextField(label: 'Email', hint: 'you@example.com', keyboardType: TextInputType.emailAddress),
+
+                AppTextField(
+                  label: 'Email',
+                  hint: 'you@example.com',
+                  keyboardType: TextInputType.emailAddress,
+                  controller: _emailController,
+                ),
+                if (_emailError != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    _emailError!,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 24),
 
                 Text(
@@ -98,12 +178,18 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
                     return GestureDetector(
                       onTap: () => setState(() => _selectedUsage = option),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.btnPrimary : Colors.white,
-                          borderRadius: BorderRadius.circular(AppRadius.filterPill),
+                          color: isSelected
+                              ? AppColors.btnPrimary
+                              : Colors.white,
+                          borderRadius:
+                              BorderRadius.circular(AppRadius.filterPill),
                           border: Border.all(
-                            color: isSelected ? AppColors.btnPrimary : AppColors.border,
+                            color: isSelected
+                                ? AppColors.btnPrimary
+                                : AppColors.border,
                           ),
                         ),
                         child: Text(
@@ -111,7 +197,9 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
                           style: GoogleFonts.dmSans(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: isSelected ? Colors.white : AppColors.textSecondary,
+                            color: isSelected
+                                ? Colors.white
+                                : AppColors.textSecondary,
                           ),
                         ),
                       ),
@@ -122,7 +210,7 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
                 const Spacer(),
 
                 GestureDetector(
-                  onTap: () => context.go('/onboarding/verify'),
+                  onTap: _onContinue,
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 14),
