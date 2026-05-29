@@ -33,8 +33,8 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: AppColors.inputBg,
-                      borderRadius: BorderRadius.circular(AppRadius.rowIcon),
-                      border: Border.all(color: AppColors.inputBorder),
+                      borderRadius: BorderRadius.circular(12.0),
+                      border: Border.all(color: AppColors.border),
                     ),
                     child: const Icon(
                       Icons.arrow_back_ios_new,
@@ -86,12 +86,12 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
           color: AppColors.screenBg,
           borderRadius: BorderRadius.circular(AppRadius.card),
           border: Border.all(
-            color: isSelected ? AppColors.purplePrimary : AppColors.inputBorder,
+            color: isSelected ? AppColors.accent : AppColors.border,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.purplePrimary.withValues(alpha: 0.12),
+                    color: AppColors.accent.withValues(alpha: 0.12),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -123,12 +123,12 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
       onTap: () => setState(() => _selectedPlan = 'premium'),
       child: Container(
         decoration: BoxDecoration(
-          gradient: AppColors.gradient,
+          gradient: AppColors.profileGradient,
           borderRadius: BorderRadius.circular(AppRadius.card),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.purplePrimary.withValues(alpha: 0.2),
+                    color: AppColors.accent.withValues(alpha: 0.2),
                     blurRadius: 20,
                     offset: const Offset(0, 6),
                   ),
@@ -154,7 +154,7 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
                   Text(
                     'INR 99/month',
                     style: AppTheme.bodySmall.copyWith(
-                      color: AppColors.purplePrimary,
+                      color: AppColors.accent,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -179,7 +179,7 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    gradient: AppColors.gradient,
+                    gradient: AppColors.profileGradient,
                     borderRadius: BorderRadius.circular(AppRadius.badge),
                   ),
                   child: Text(
@@ -204,7 +204,7 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
         Icon(
           Icons.check_circle,
           size: 18,
-          color: AppColors.activeColor,
+          color: AppColors.green,
         ),
         const SizedBox(width: 10),
         Expanded(

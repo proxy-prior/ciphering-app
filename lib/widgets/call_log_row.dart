@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../data/mock_data.dart';
+import 'glass_card.dart';
 import 'status_badge.dart';
 
 class CallLogRow extends StatelessWidget {
   final CallLogModel call;
-  final VoidCallback? onCallBack;
+  final VoidCallback? onTap;
 
-  const CallLogRow({super.key, required this.call, this.onCallBack});
+  const CallLogRow({super.key, required this.call, this.onTap});
 
   Color get _iconBg {
     switch (call.status) {
-      case CallStatus.answered: return AppColors.activeBadgeBg;
-      case CallStatus.missed: return AppColors.expiredBadgeBg;
-      case CallStatus.blocked: return AppColors.blockedBadgeBg;
-      case CallStatus.expired: return AppColors.disabledBadgeBg;
+      case CallStatus.answered: return AppColors.answeredIconBg;
+      case CallStatus.missed: return AppColors.missedIconBg;
+      case CallStatus.blocked: return AppColors.blockedIconBg;
+      case CallStatus.outgoing: return AppColors.outgoingIconBg;
     }
   }
 
   Color get _iconColor {
     switch (call.status) {
-      case CallStatus.answered: return AppColors.activeColor;
-      case CallStatus.missed: return AppColors.missedColor;
-      case CallStatus.blocked: return AppColors.blockedColor;
-      case CallStatus.expired: return AppColors.disabledColor;
+      case CallStatus.answered: return AppColors.green;
+      case CallStatus.missed: return AppColors.redText;
+      case CallStatus.blocked: return AppColors.purple;
+      case CallStatus.outgoing: return AppColors.blue;
     }
   }
 
@@ -32,7 +34,7 @@ class CallLogRow extends StatelessWidget {
       case CallStatus.answered: return Icons.call_received;
       case CallStatus.missed: return Icons.call_missed;
       case CallStatus.blocked: return Icons.block;
-      case CallStatus.expired: return Icons.access_time;
+      case CallStatus.outgoing: return Icons.call_made;
     }
   }
 
@@ -46,51 +48,66 @@ class CallLogRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.cardBorder),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 4, offset: const Offset(0, 1)),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40, height: 40,
-            decoration: BoxDecoration(color: _iconBg, borderRadius: BorderRadius.circular(AppRadius.rowIcon)),
-            child: Icon(_icon, size: 18, color: _iconColor),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: GlassCard(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        onTap: onTap,
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: _iconBg,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(_icon, size: 20, color: _iconColor),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(call.callerName, style: AppTheme.callerName),
+                  const SizedBox(height: 1),
+                  Text(
+                    call.callerNumber,
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    'via ${call.aliasLabel}',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 11,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(call.callerName, style: AppTheme.body.copyWith(fontSize: 14, fontWeight: FontWeight.w600)),
-                Text(call.callerNumber, style: AppTheme.bodySmall.copyWith(fontSize: 12)),
-                Text('To: ${call.aliasNumber}', style: AppTheme.caption),
+                Text(
+                  _timeStr,
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textTertiary,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                StatusBadge.fromCallStatus(call.status),
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(_timeStr, style: AppTheme.bodySmall.copyWith(fontSize: 12)),
-              const SizedBox(height: 3),
-              StatusBadge.fromCallStatus(call.status),
-              if (call.status == CallStatus.missed) ...[
-                const SizedBox(height: 4),
-                GestureDetector(
-                  onTap: onCallBack,
-                  child: const Icon(Icons.call, size: 16, color: AppColors.purplePrimary),
-                ),
-              ],
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

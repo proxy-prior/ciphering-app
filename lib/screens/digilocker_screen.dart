@@ -43,8 +43,8 @@ class _DigilockerScreenState extends State<DigilockerScreen> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: AppColors.inputBg,
-                      borderRadius: BorderRadius.circular(AppRadius.rowIcon),
-                      border: Border.all(color: AppColors.inputBorder),
+                      borderRadius: BorderRadius.circular(12.0),
+                      border: Border.all(color: AppColors.border),
                     ),
                     child: const Icon(
                       Icons.arrow_back_ios_new,
@@ -61,7 +61,7 @@ class _DigilockerScreenState extends State<DigilockerScreen> {
                         width: 60,
                         height: 60,
                         decoration: BoxDecoration(
-                          gradient: AppColors.gradient,
+                          gradient: AppColors.profileGradient,
                           borderRadius: BorderRadius.circular(18),
                         ),
                         child: const Icon(
@@ -97,7 +97,7 @@ class _DigilockerScreenState extends State<DigilockerScreen> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       child: CircularProgressIndicator(
-                        color: AppColors.purplePrimary,
+                        color: AppColors.accent,
                       ),
                     ),
                   )
@@ -124,7 +124,7 @@ class _DigilockerScreenState extends State<DigilockerScreen> {
           width: 6,
           height: 6,
           decoration: BoxDecoration(
-            color: AppColors.purplePrimary,
+            color: AppColors.accent,
             borderRadius: BorderRadius.circular(3),
           ),
         ),

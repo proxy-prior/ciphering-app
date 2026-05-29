@@ -57,8 +57,8 @@ class _AliasPurposeScreenState extends State<AliasPurposeScreen> {
                     height: 40,
                     decoration: BoxDecoration(
                       color: AppColors.inputBg,
-                      borderRadius: BorderRadius.circular(AppRadius.rowIcon),
-                      border: Border.all(color: AppColors.inputBorder),
+                      borderRadius: BorderRadius.circular(12.0),
+                      border: Border.all(color: AppColors.border),
                     ),
                     child: const Icon(
                       Icons.arrow_back_ios_new,
@@ -112,7 +112,7 @@ class _AliasPurposeScreenState extends State<AliasPurposeScreen> {
     if (isSelected) {
       return Container(
         decoration: BoxDecoration(
-          gradient: AppColors.gradient,
+          gradient: AppColors.profileGradient,
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.all(1.5),
@@ -125,7 +125,7 @@ class _AliasPurposeScreenState extends State<AliasPurposeScreen> {
           child: Text(
             label,
             style: AppTheme.body.copyWith(
-              color: AppColors.purplePrimary,
+              color: AppColors.accent,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -138,7 +138,7 @@ class _AliasPurposeScreenState extends State<AliasPurposeScreen> {
       decoration: BoxDecoration(
         color: AppColors.screenBg,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.inputBorder),
+        border: Border.all(color: AppColors.border),
       ),
       child: Text(
         label,

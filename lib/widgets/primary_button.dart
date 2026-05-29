@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class PrimaryButton extends StatelessWidget {
@@ -13,24 +14,18 @@ class PrimaryButton extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          gradient: AppColors.gradient,
-          borderRadius: BorderRadius.circular(AppRadius.button),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.purplePrimary.withValues(alpha: 0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          color: AppColors.btnPrimary,
+          borderRadius: BorderRadius.circular(AppRadius.input),
         ),
         child: Text(
           label,
           textAlign: TextAlign.center,
-          style: AppTheme.body.copyWith(
-            color: Colors.white,
+          style: GoogleFonts.dmSans(
+            fontSize: 15,
             fontWeight: FontWeight.w600,
+            color: Colors.white,
           ),
         ),
       ),

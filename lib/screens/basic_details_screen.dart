@@ -1,122 +1,180 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gradient_background.dart';
-import '../widgets/primary_button.dart';
 import '../widgets/app_text_field.dart';
 
-class BasicDetailsScreen extends StatelessWidget {
+class BasicDetailsScreen extends StatefulWidget {
   const BasicDetailsScreen({super.key});
+
+  @override
+  State<BasicDetailsScreen> createState() => _BasicDetailsScreenState();
+}
+
+class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
+  String _selectedUsage = 'Personal';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GradientBackground(
         child: SafeArea(
-          child: SingleChildScrollView(
+          child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 48),
+                const SizedBox(height: 40),
 
-                // Title
-                Text(
-                  'Complete Your Profile',
-                  style: AppTheme.pageTitle,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Just a few details to get you started',
-                  style: AppTheme.bodySmall,
-                ),
-                const SizedBox(height: 36),
-
-                // Full Name field
-                const AppTextField(
-                  label: 'Full Name',
-                  hint: 'Enter your full name',
-                  keyboardType: TextInputType.name,
-                ),
-                const SizedBox(height: 20),
-
-                // Email Address field
-                const AppTextField(
-                  label: 'Email Address',
-                  hint: 'you@example.com',
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 20),
-
-                // Date of Birth field
-                AppTextField(
-                  label: 'Date of Birth',
-                  hint: 'DD / MM / YYYY',
-                  keyboardType: TextInputType.datetime,
-                  suffix: Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: Icon(
-                      Icons.calendar_today_outlined,
-                      size: 20,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-
-                // Progress bar
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: AppColors.activeColor,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Container(
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: AppColors.activeColor,
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Container(
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE2E8F0),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
                 Center(
-                  child: Text(
-                    'Step 2 of 3',
-                    style: AppTheme.caption,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _StepDot(isDone: true),
+                      const SizedBox(width: 6),
+                      _StepDot(isActive: true),
+                      const SizedBox(width: 6),
+                      _StepDot(),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 24),
 
-                // Continue button
-                PrimaryButton(
-                  label: 'Continue',
-                  onPressed: () => context.go('/home/alias'),
+                Text('Set up your profile', style: AppTheme.otpTitle),
+                const SizedBox(height: 6),
+                Text('Tell us a bit about yourself', style: AppTheme.body),
+                const SizedBox(height: 24),
+
+                Center(
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: AppColors.divider,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: AppColors.textQuaternary,
+                        width: 2,
+                        strokeAlign: BorderSide.strokeAlignInside,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.camera_alt_outlined, size: 24, color: AppColors.textTertiary),
+                        Text(
+                          'Add photo',
+                          style: GoogleFonts.dmSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textTertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
+
+                const AppTextField(label: 'Full Name', hint: 'Enter your full name', keyboardType: TextInputType.name),
+                const SizedBox(height: 18),
+                const AppTextField(label: 'Email', hint: 'you@example.com', keyboardType: TextInputType.emailAddress),
+                const SizedBox(height: 24),
+
+                Text(
+                  'How will you use Ciphering?',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8,
+                  children: ['Personal', 'Business', 'Both'].map((option) {
+                    final isSelected = _selectedUsage == option;
+                    return GestureDetector(
+                      onTap: () => setState(() => _selectedUsage = option),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isSelected ? AppColors.btnPrimary : Colors.white,
+                          borderRadius: BorderRadius.circular(AppRadius.filterPill),
+                          border: Border.all(
+                            color: isSelected ? AppColors.btnPrimary : AppColors.border,
+                          ),
+                        ),
+                        child: Text(
+                          option,
+                          style: GoogleFonts.dmSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: isSelected ? Colors.white : AppColors.textSecondary,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+
+                const Spacer(),
+
+                GestureDetector(
+                  onTap: () => context.go('/home/alias'),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      color: AppColors.btnPrimary,
+                      borderRadius: BorderRadius.circular(AppRadius.input),
+                    ),
+                    child: Text(
+                      'Get Started',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.dmSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _StepDot extends StatelessWidget {
+  final bool isDone;
+  final bool isActive;
+
+  const _StepDot({this.isDone = false, this.isActive = false});
+
+  @override
+  Widget build(BuildContext context) {
+    if (isActive) {
+      return Container(
+        width: 24,
+        height: 8,
+        decoration: BoxDecoration(
+          color: AppColors.btnPrimary,
+          borderRadius: BorderRadius.circular(4),
+        ),
+      );
+    }
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: isDone ? AppColors.green : AppColors.pillBorder,
+        shape: BoxShape.circle,
       ),
     );
   }

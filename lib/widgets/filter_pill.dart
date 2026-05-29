@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class FilterPill extends StatelessWidget {
@@ -18,17 +19,19 @@ class FilterPill extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.filterActiveBg : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: isActive ? null : Border.all(color: AppColors.inputBorder),
+          color: isActive ? AppColors.btnPrimary : Colors.white,
+          borderRadius: BorderRadius.circular(AppRadius.filterPill),
+          border: Border.all(
+            color: isActive ? AppColors.btnPrimary : AppColors.border,
+          ),
         ),
         child: Text(
           label,
-          style: AppTheme.caption.copyWith(
-            fontSize: 12,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+          style: GoogleFonts.dmSans(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
             color: isActive ? Colors.white : AppColors.textSecondary,
           ),
         ),

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class OTPInputRow extends StatefulWidget {
   final int length;
   final ValueChanged<String>? onCompleted;
 
-  const OTPInputRow({super.key, this.length = 6, this.onCompleted});
+  const OTPInputRow({super.key, this.length = 4, this.onCompleted});
 
   @override
   State<OTPInputRow> createState() => _OTPInputRowState();
@@ -51,7 +52,8 @@ class _OTPInputRowState extends State<OTPInputRow> {
       children: List.generate(widget.length, (i) {
         final hasValue = _controllers[i].text.isNotEmpty;
         return Container(
-          width: 48, height: 56,
+          width: 52,
+          height: 56,
           margin: EdgeInsets.only(right: i < widget.length - 1 ? 10 : 0),
           child: TextField(
             controller: _controllers[i],
@@ -59,30 +61,34 @@ class _OTPInputRowState extends State<OTPInputRow> {
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
             maxLength: 1,
-            style: AppTheme.pageTitle.copyWith(fontSize: 22),
+            style: GoogleFonts.dmSans(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             onChanged: (v) => _onChanged(i, v),
             decoration: InputDecoration(
               counterText: '',
               filled: true,
-              fillColor: AppColors.inputBg,
+              fillColor: Colors.white,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
-                  color: hasValue ? AppColors.purplePrimary : AppColors.inputBorder,
-                  width: hasValue ? 2 : 1.5,
+                  color: hasValue ? AppColors.btnPrimary : AppColors.border,
+                  width: hasValue ? 2 : 1,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(
-                  color: hasValue ? AppColors.purplePrimary : AppColors.inputBorder,
-                  width: hasValue ? 2 : 1.5,
+                  color: hasValue ? AppColors.btnPrimary : AppColors.border,
+                  width: hasValue ? 2 : 1,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: AppColors.purplePrimary, width: 2),
+                borderSide: const BorderSide(color: Color(0xFF43A7FF), width: 2),
               ),
             ),
           ),

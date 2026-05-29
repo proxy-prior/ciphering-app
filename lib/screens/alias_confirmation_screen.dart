@@ -34,7 +34,7 @@ class AliasConfirmationScreen extends StatelessWidget {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        gradient: AppColors.gradient,
+                        gradient: AppColors.profileGradient,
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: const Icon(
@@ -57,7 +57,7 @@ class AliasConfirmationScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: AppColors.screenBg,
                       borderRadius: BorderRadius.circular(AppRadius.card),
-                      border: Border.all(color: AppColors.inputBorder),
+                      border: Border.all(color: AppColors.border),
                     ),
                     child: Column(
                       children: [
@@ -81,7 +81,7 @@ class AliasConfirmationScreen extends StatelessWidget {
                             Text(
                               'Premium',
                               style: AppTheme.bodySmall.copyWith(
-                                color: AppColors.purplePrimary,
+                                color: AppColors.accent,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

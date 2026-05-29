@@ -10,27 +10,34 @@ class HomeShell extends StatelessWidget {
   int _currentIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
     if (location.startsWith('/home/calls')) return 1;
-    if (location.startsWith('/home/messages')) return 2;
-    if (location.startsWith('/home/settings')) return 3;
     return 0;
+  }
+
+  bool _showFab(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
+    return location.startsWith('/home/alias');
   }
 
   void _onTap(BuildContext context, int index) {
     switch (index) {
       case 0: context.go('/home/alias');
       case 1: context.go('/home/calls');
-      case 2: context.go('/home/messages');
-      case 3: context.go('/home/settings');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: child,
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex(context),
-        onTap: (i) => _onTap(context, i),
+      body: Stack(
+        children: [
+          child,
+          BottomNavBar(
+            currentIndex: _currentIndex(context),
+            onTap: (i) => _onTap(context, i),
+            showFab: _showFab(context),
+            onFabTap: () => context.push('/create-alias/verify'),
+          ),
+        ],
       ),
     );
   }

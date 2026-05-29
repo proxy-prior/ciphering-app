@@ -2,101 +2,173 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
-  static const purplePrimary = Color(0xFF7C6DD8);
-  static const bluePrimary = Color(0xFF5B8DEF);
-  static const blueLight = Color(0xFF9BB5F0);
+  // Backgrounds
+  static const screenBg = Color(0xFFF8F8F8);
+  static const inputBg = Color(0xFFFFFFFF);
+  static const navBg = Color(0xFF1A1A1A);
+  static const btnPrimary = Color(0xFF1A1A1A);
+  static const accentBg = Color(0xFFF5F3FF);
+  static const divider = Color(0xFFF1F5F9);
+  static const pillBorder = Color(0xFFE2E8F0);
 
-  static const activeColor = Color(0xFF14B8A6);
-  static const expiredColor = Color(0xFFF87171);
-  static const disabledColor = Color(0xFFFB923C);
-  static const answeredColor = Color(0xFF14B8A6);
-  static const missedColor = Color(0xFFFB7185);
-  static const blockedColor = Color(0xFFA78BFA);
+  // Text
+  static const textPrimary = Color(0xFF0F172A);
+  static const textSecondary = Color(0xFF64748B);
+  static const textTertiary = Color(0xFF94A3B8);
+  static const textQuaternary = Color(0xFFCBD5E1);
 
-  static const activeBadgeBg = Color(0xFFF0FDFA);
-  static const activeBadgeText = Color(0xFF14B8A6);
-  static const expiredBadgeBg = Color(0xFFFFF1F2);
-  static const expiredBadgeText = Color(0xFFE11D48);
-  static const disabledBadgeBg = Color(0xFFFFF7ED);
-  static const disabledBadgeText = Color(0xFFEA580C);
+  // Borders
+  static const border = Color(0xFFEAEAEA);
+
+  // Accent
+  static const accent = Color(0xFF7C3AED);
+
+  // Status
+  static const red = Color(0xFFEF4444);
+  static const redText = Color(0xFFDC2626);
+  static const green = Color(0xFF16A34A);
+  static const yellow = Color(0xFFCA8A04);
+  static const purple = Color(0xFF7C3AED);
+  static const blue = Color(0xFF3B82F6);
+
+  // Badge backgrounds
+  static const activeBadgeBg = Color(0xFFF0FDF4);
+  static const pausedBadgeBg = Color(0xFFFEFCE8);
+  static const expiredBadgeBg = Color(0xFFFEF2F2);
   static const blockedBadgeBg = Color(0xFFF5F3FF);
-  static const blockedBadgeText = Color(0xFF7C3AED);
 
-  static const expiredCardTint = Color(0xFFFFFBFB);
-  static const disabledCardTint = Color(0xFFFFFCF8);
+  // Call type icon backgrounds
+  static const answeredIconBg = Color(0xFFF0FDF4);
+  static const missedIconBg = Color(0xFFFEF2F2);
+  static const blockedIconBg = Color(0xFFF5F3FF);
+  static const outgoingIconBg = Color(0xFFEFF6FF);
 
-  static const screenBg = Color(0xFFFFFFFF);
-  static const cardBorder = Color(0x0A000000);
-  static const inputBg = Color(0xFFFAFAFE);
-  static const inputBorder = Color(0xFFEDE9FE);
-  static const statPillBg = Color(0xFFF5F3FF);
-  static const statSpecialBg = Color(0xFFEDE9FE);
-  static const statSpecialText = Color(0xFF7C3AED);
+  // Category tints
+  static const workTint = Color(0xFFEFF6FF);
+  static const personalTint = Color(0xFFFDF2F8);
+  static const freelanceTint = Color(0xFFF0FDF4);
+  static const marketplaceTint = Color(0xFFFFF7ED);
+  static const spamTint = Color(0xFFF5F3FF);
 
-  static const textPrimary = Color(0xFF1A1A2E);
-  static const textSecondary = Color(0xFF8E8EA0);
-  static const textTertiary = Color(0xFFB0B0C0);
+  // Notification badge
+  static const notifBadgeBg = Color(0xFFEF4444);
 
-  static const filterActiveBg = Color(0xFF1A1A2E);
-  static const navDivider = Color(0xFFF0EDF5);
-
-  static const destructiveBg = Color(0xFFFFF5F5);
-  static const destructiveBorder = Color(0xFFFFE4E6);
-  static const destructiveText = Color(0xFFE11D48);
-
-  static const notifBtnBg = Color(0xFFF5F3FF);
-
-  static const gradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [purplePrimary, bluePrimary],
-  );
-
+  // Profile gradient
   static const profileGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [purplePrimary, bluePrimary, blueLight],
+    colors: [Color(0xFF8B5CF6), Color(0xFF6366F1)],
   );
 }
 
 class AppRadius {
   static const card = 16.0;
-  static const input = 14.0;
-  static const badge = 20.0;
-  static const button = 50.0;
-  static const statusBorder = 4.0;
-  static const statPill = 20.0;
-  static const logo = 18.0;
-  static const rowIcon = 12.0;
+  static const statCard = 14.0;
+  static const input = 12.0;
+  static const activityIcon = 12.0;
+  static const iconButton = 50.0;
+  static const badge = 8.0;
+  static const tabOuter = 12.0;
+  static const tabInner = 10.0;
+  static const nav = 9999.0;
+  static const profileAvatar = 20.0;
+  static const filterPill = 9999.0;
 }
 
 class AppTheme {
-  static TextStyle get wordmark => GoogleFonts.pacifico(
-        fontSize: 22,
+  static TextStyle get welcomeName => GoogleFonts.dmSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
+        letterSpacing: -0.4,
+        height: 1.3,
       );
 
-  static TextStyle get wordmarkLarge => GoogleFonts.pacifico(
-        fontSize: 32,
+  static TextStyle get statementHeadline => GoogleFonts.dmSans(
+        fontSize: 34,
+        fontWeight: FontWeight.w800,
         color: AppColors.textPrimary,
+        letterSpacing: -1.36,
+        height: 1.1,
+      );
+
+  static TextStyle get statementAccent => GoogleFonts.dmSans(
+        fontSize: 34,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textTertiary,
+        letterSpacing: -1.36,
+        height: 1.1,
       );
 
   static TextStyle get pageTitle => GoogleFonts.dmSans(
-        fontSize: 26,
-        fontWeight: FontWeight.w700,
-        color: AppColors.textPrimary,
-      );
-
-  static TextStyle get heading => GoogleFonts.dmSans(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
+        letterSpacing: -0.36,
+      );
+
+  static TextStyle get contactName => GoogleFonts.dmSans(
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.44,
+      );
+
+  static TextStyle get aliasDetailName => GoogleFonts.dmSans(
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.48,
+      );
+
+  static TextStyle get profileName => GoogleFonts.dmSans(
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.44,
+      );
+
+  static TextStyle get loginHeadline => GoogleFonts.dmSans(
+        fontSize: 30,
+        fontWeight: FontWeight.w800,
+        color: AppColors.textPrimary,
+        letterSpacing: -1.05,
+        height: 1.1,
+      );
+
+  static TextStyle get loginHeadlineGray => GoogleFonts.dmSans(
+        fontSize: 30,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textTertiary,
+        letterSpacing: -1.05,
+        height: 1.1,
+      );
+
+  static TextStyle get otpTitle => GoogleFonts.dmSans(
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.48,
+      );
+
+  static TextStyle get cardName => GoogleFonts.dmSans(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.15,
+      );
+
+  static TextStyle get callerName => GoogleFonts.dmSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.14,
       );
 
   static TextStyle get body => GoogleFonts.dmSans(
-        fontSize: 15,
+        fontSize: 14,
         fontWeight: FontWeight.w400,
-        color: AppColors.textPrimary,
+        color: AppColors.textSecondary,
       );
 
   static TextStyle get bodySmall => GoogleFonts.dmSans(
@@ -105,17 +177,85 @@ class AppTheme {
         color: AppColors.textSecondary,
       );
 
-  static TextStyle get caption => GoogleFonts.dmSans(
+  static TextStyle get cardNumber => GoogleFonts.dmSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textSecondary,
+      );
+
+  static TextStyle get sectionLabel => GoogleFonts.dmSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textTertiary,
+        letterSpacing: 0.48,
+      );
+
+  static TextStyle get statValue => GoogleFonts.dmSans(
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.44,
+      );
+
+  static TextStyle get statValueDetail => GoogleFonts.dmSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.4,
+      );
+
+  static TextStyle get statLabel => GoogleFonts.dmSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textTertiary,
+      );
+
+  static TextStyle get navLabel => GoogleFonts.dmSans(
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      );
+
+  static TextStyle get settingTitle => GoogleFonts.dmSans(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textPrimary,
+      );
+
+  static TextStyle get settingDesc => GoogleFonts.dmSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textTertiary,
+      );
+
+  static TextStyle get sectionCount => GoogleFonts.dmSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textTertiary,
+      );
+
+  static TextStyle get terms => GoogleFonts.dmSans(
         fontSize: 11,
         fontWeight: FontWeight.w400,
         color: AppColors.textTertiary,
       );
 
-  static TextStyle get sectionLabel => GoogleFonts.dmSans(
+  static TextStyle get version => GoogleFonts.dmSans(
         fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: AppColors.textQuaternary,
+      );
+
+  static TextStyle get heading => GoogleFonts.dmSans(
+        fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: AppColors.textSecondary,
-        letterSpacing: 1.2,
+        color: AppColors.textPrimary,
+      );
+
+  static TextStyle get caption => GoogleFonts.dmSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w400,
+        color: AppColors.textTertiary,
       );
 
   static ThemeData get theme => ThemeData(
@@ -123,8 +263,8 @@ class AppTheme {
         scaffoldBackgroundColor: AppColors.screenBg,
         textTheme: GoogleFonts.dmSansTextTheme(),
         colorScheme: ColorScheme.light(
-          primary: AppColors.purplePrimary,
-          secondary: AppColors.bluePrimary,
+          primary: AppColors.accent,
+          secondary: AppColors.blue,
           surface: AppColors.screenBg,
         ),
       );

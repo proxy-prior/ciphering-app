@@ -1,43 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class StatPill extends StatelessWidget {
-  final String value;
-  final String label;
-  final bool isSpecial;
+  final String text;
 
-  const StatPill({
-    super.key,
-    required this.value,
-    required this.label,
-    this.isSpecial = false,
-  });
+  const StatPill({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: isSpecial ? AppColors.statSpecialBg : AppColors.statPillBg,
-        borderRadius: BorderRadius.circular(AppRadius.statPill),
+        color: const Color(0xFFF8FAFC).withValues(alpha: 0.8),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: AppColors.pillBorder),
       ),
-      child: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: value,
-              style: AppTheme.caption.copyWith(
-                fontWeight: FontWeight.w700,
-                color: isSpecial ? AppColors.statSpecialText : AppColors.textPrimary,
-              ),
-            ),
-            TextSpan(
-              text: ' $label',
-              style: AppTheme.caption.copyWith(
-                color: isSpecial ? AppColors.statSpecialText : AppColors.textPrimary,
-              ),
-            ),
-          ],
+      child: Text(
+        text,
+        style: GoogleFonts.dmSans(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textSecondary,
         ),
       ),
     );

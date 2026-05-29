@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class AppTextField extends StatelessWidget {
@@ -28,36 +29,37 @@ class AppTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: AppTheme.bodySmall.copyWith(
+          style: GoogleFonts.dmSans(
+            fontSize: 13,
             fontWeight: FontWeight.w500,
             color: AppColors.textPrimary,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Container(
           decoration: BoxDecoration(
             color: AppColors.inputBg,
             borderRadius: BorderRadius.circular(AppRadius.input),
-            border: Border.all(color: AppColors.inputBorder, width: 1.5),
+            border: Border.all(color: AppColors.border),
           ),
           child: TextField(
             controller: controller,
             keyboardType: keyboardType,
             readOnly: readOnly,
-            style: AppTheme.body,
+            style: GoogleFonts.dmSans(fontSize: 14, color: AppColors.textPrimary),
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: AppTheme.body.copyWith(color: AppColors.textTertiary),
+              hintStyle: GoogleFonts.dmSans(fontSize: 14, color: AppColors.textTertiary),
               prefixIcon: prefix != null
                   ? Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 12),
+                      padding: const EdgeInsets.only(left: 14, right: 12),
                       child: prefix,
                     )
                   : null,
               prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
               suffixIcon: suffix,
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             ),
           ),
         ),

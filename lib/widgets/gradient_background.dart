@@ -1,55 +1,63 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 class GradientBackground extends StatelessWidget {
   final Widget child;
+  final bool useAurora;
 
-  const GradientBackground({super.key, required this.child});
+  const GradientBackground({
+    super.key,
+    required this.child,
+    this.useAurora = true,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
-          top: -60,
-          left: -40,
-          child: Container(
-            width: 260,
-            height: 260,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  AppColors.purplePrimary.withValues(alpha: 0.22),
-                  AppColors.purplePrimary.withValues(alpha: 0.08),
-                  Colors.transparent,
-                ],
-                stops: const [0.0, 0.4, 0.7],
+    return Container(
+      color: AppColors.screenBg,
+      child: Stack(
+        children: [
+          if (useAurora)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(
+                  painter: _AuroraPainter(),
+                ),
               ),
             ),
-          ),
-        ),
-        Positioned(
-          top: -40,
-          right: -50,
-          child: Container(
-            width: 240,
-            height: 240,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  AppColors.bluePrimary.withValues(alpha: 0.20),
-                  AppColors.bluePrimary.withValues(alpha: 0.06),
-                  Colors.transparent,
-                ],
-                stops: const [0.0, 0.4, 0.7],
-              ),
-            ),
-          ),
-        ),
-        child,
-      ],
+          child,
+        ],
+      ),
     );
   }
+}
+
+class _AuroraPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.saveLayer(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Paint()..imageFilter = ui.ImageFilter.blur(sigmaX: 80, sigmaY: 80),
+    );
+
+    final peachPaint = Paint()
+      ..color = const Color(0xFFFF8243).withValues(alpha: 0.7);
+    canvas.drawOval(
+      Rect.fromLTWH(62, 26, 126, 126),
+      peachPaint,
+    );
+
+    final bluePaint = Paint()
+      ..color = const Color(0xFF43A7FF).withValues(alpha: 0.7);
+    canvas.drawOval(
+      Rect.fromLTWH(173, -16, 166, 174),
+      bluePaint,
+    );
+
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
