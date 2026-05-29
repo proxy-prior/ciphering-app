@@ -1,0 +1,18 @@
+tempo/.tempo/
+tempo/node_modules/
+tempo/dist/
+
+# Flutter
+*.iml
+*.ipr
+*.iws
+.idea/
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+pubspec.lock
+*.g.dart
